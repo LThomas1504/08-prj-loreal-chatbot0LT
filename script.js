@@ -6,7 +6,7 @@ const chatWindow = document.getElementById("chatWindow");
 /* Configuration — set your deployed worker URL here for secure calls.
   The Cloudflare Worker should hold the OpenAI API key as a secret.
   Set WORKER_URL to the public worker URL (example below). */
-const WORKER_URL = "https://polished-king-fc9e.lthomas15.workers.dev/"; // set to your deployed worker URL
+const WORKER_URL = "https://broad-frog-68ee.lthomas15.workers.dev/"; // set to your deployed worker URL
 
 // Chat history kept in-memory for the session. We keep a system message once.
 const messages = [
