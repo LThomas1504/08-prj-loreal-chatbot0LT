@@ -5,106 +5,289 @@
   padding: 0;
 }
 
-/* —— body + fonts —— */
+/* —— L'Oréal brand tokens & typography —— */
+/*
+    Licensed Monotype fonts (optional)
+
+    If you have a licensed L'Oréal/Monotype font (for example Didot, Bodoni, or a Monotype-supplied corporate font),
+    you can host the files locally and reference them here using @font-face. This project keeps the system-safe
+    stacks as the default (see --font-heading and --font-body) so nothing breaks if the licensed fonts are not available.
+
+    Example (uncomment and supply your licensed font files in a /fonts folder):
+
+    @font-face {
+      font-family: "Loreal Didot";
+      src: local("Didot"),
+           url("/fonts/Didot-Regular.woff2") format("woff2"),
+           url("/fonts/Didot-Regular.woff") format("woff");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    Then update the --font-heading variable below to prefer your licensed font:
+      --font-heading: "Loreal Didot", "Didot", "Bodoni MT", "Playfair Display", Georgia, serif;
+
+    Notes:
+    - Keep licensed font files out of public repos unless your license allows distribution.
+      Prefer adding them to a private asset host or a secure CDN with access control.
+    - woff2 is preferred for modern browsers; include woff/ttf as fallbacks if needed.
+    - The `local()` source helps use a font already installed on your machine (helpful for staging).
+  */
+:root {
+  /* Primary brand colors (L'Oréal-inspired) */
+  --lor-black: #0b0b0b; /* logo/primary text */
+  --lor-charcoal: #2b2b2b; /* body text */
+  --lor-gold: #bfa06a; /* accent / luxury gold */
+  --lor-gold-dark: #9c7b3f; /* accent darker */
+  --lor-muted: #8a8a8a; /* subdued text */
+  --lor-bg: #f5f1ec; /* warm neutral background */
+  --lor-card: #ffffff; /* card / panel background */
+  --lor-border: #e6e0d9; /* subtle borders */
+  --lor-red: #ff0038; /* passionate red (accent) */
+  --lor-white: #ffffff;
+
+  /* Typography stacks */
+  --font-heading: "Didot", "Bodoni MT", "Playfair Display", Georgia, serif;
+  --font-body: "Helvetica Neue", Arial, Helvetica, sans-serif;
+
+  --radius: 8px;
+  --gap: 12px;
+}
+
+/* —— body + layout —— */
 body {
-  font-family: "Montserrat", Arial, Helvetica, sans-serif;
-  color: #333;
+  font-family: var(--font-body);
+  color: var(--lor-charcoal);
+  background: var(--lor-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   display: flex;
   justify-content: center;
+  padding: 28px 12px 80px;
 }
 
 .page-wrapper {
-  width: 90%;
-  max-width: 900px;
+  width: 94%;
+  max-width: 980px;
 }
 
 /* header */
 .site-header {
   text-align: center;
-  padding-top: 50px;
+  padding-top: 8px;
+  padding-bottom: 18px;
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 40%,
+    var(--lor-bg) 100%
+  );
 }
 
 .site-title {
-  font-size: 22px;
-  font-weight: 500;
-  margin-bottom: 10px;
+  font-family: var(--font-heading);
+  color: var(--lor-black);
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+/* small color band that mirrors the L'Oréal palette from the brand imagery */
+.brand-strip {
+  display: flex;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto 14px;
+  height: 10px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.brand-strip span {
+  flex: 1 1 0;
+  display: block;
+}
+.brand-strip .blk {
+  background: var(--lor-black);
+}
+.brand-strip .wht {
+  background: var(--lor-white);
+}
+.brand-strip .red {
+  background: var(--lor-red);
+}
+.brand-strip .gold {
+  background: linear-gradient(180deg, var(--lor-gold), var(--lor-gold-dark));
+}
+
+.site-subtitle {
+  font-size: 13px;
+  color: var(--lor-muted);
+  margin-top: 4px;
+}
+
+/* Call-to-action styling tuned to brand */
+.chat-form button {
+  background: var(--lor-red);
+  color: var(--lor-white);
+}
+.chat-form button:hover {
+  .site-logo {
+    display: block;
+    margin: 0 auto 10px;
+    max-height: 56px;
+    width: auto;
+  }
+  background: var(--lor-gold);
+  color: var(--lor-black);
+}
+
+/* Links use red for primary emphasis and gold on hover */
+a {
+  color: var(--lor-red);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--lor-gold-dark);
+}
+
+/* Footer alternative — darker tone with white text for strong contrast */
+.site-footer {
+  background: var(--lor-card);
+  box-shadow: 0 2px 6px rgba(11, 11, 11, 0.04);
+  text-align: center;
+  font-size: 13px;
+  color: var(--lor-muted);
+}
+.site-footer .dark {
+  background: var(--lor-black);
+  color: var(--lor-white);
+  padding: 18px 0;
+  border-radius: 8px;
 }
 
 /* chat window */
 .chatbox {
-  margin: 40px 0;
+  margin: 28px 0;
 }
 
 .chat-window {
-  height: 360px;
-  border: 1px solid #000;
+  height: 420px;
+  border: 1px solid var(--lor-border);
   padding: 20px;
   font-size: 18px;
-  line-height: 1.5;
+  line-height: 1.6;
   overflow-y: auto;
-  background: #fafafa;
+  background: var(--lor-card);
   white-space: pre-line;
+  border-radius: var(--radius);
+  box-shadow: 0 6px 18px rgba(11, 11, 11, 0.06);
 }
 
 /* messages */
 .msg {
-  margin-bottom: 14px;
-  line-height: 1.5;
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.msg .bubble {
+  max-width: 78%;
+  padding: 12px 14px;
+  font-size: 15px;
+  line-height: 1.45;
 }
 
 .msg.user {
-  color: #000;
+  justify-content: flex-end;
+}
+
+.msg.user .bubble {
+  background: var(--lor-black);
+  color: var(--lor-white);
+  border-radius: 18px 18px 6px 18px;
 }
 
 .msg.ai {
-  color: #666666;
+  justify-content: flex-start;
+}
+
+.msg.ai .bubble {
+  background: var(--lor-card);
+  color: var(--lor-charcoal);
+  border: 1px solid var(--lor-border);
+  border-radius: 18px 18px 18px 6px;
+}
+
+/* latest question display */
+.latest-question {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-left: 4px solid var(--lor-gold);
+  background: rgba(191, 160, 106, 0.06);
+  color: var(--lor-charcoal);
+  border-radius: 8px;
+  font-style: italic;
 }
 
 /* input row */
 .chat-form {
   display: flex;
-  gap: 12px;
-  margin-top: 16px;
+  gap: var(--gap);
+  margin-top: 18px;
+  align-items: center;
 }
 
 .chat-form input {
   flex: 1;
-  padding: 12px;
-  border: 1px solid #ccc;
-  font-size: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--lor-border);
+  font-size: 16px;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--lor-charcoal);
+}
+
+.chat-form input::placeholder {
+  color: #b9b0a5;
 }
 
 .chat-form input:focus {
-  outline: 2px solid #000;
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(191, 160, 106, 0.12);
+  border-color: var(--lor-gold-dark);
 }
 
 .chat-form button {
-  font-size: 18px;
-  background: #000;
-  color: #fff;
+  font-size: 16px;
+  background: var(--lor-black);
+  color: var(--lor-card);
   border: none;
-  padding: 12px;
-  width: 48px;
+  padding: 12px 14px;
+  width: 56px;
   height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.2s, color 0.2s, transform 0.08s;
+  border-radius: 8px;
 }
 
 .chat-form button .material-icons {
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .chat-form button:hover {
-  background: #666666;
+  background: var(--lor-gold);
+  color: var(--lor-black);
+  transform: translateY(-1px);
 }
 
 .chat-form button:focus {
-  outline: 2px solid #000;
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(191, 160, 106, 0.18);
 }
 
 /* visually hidden */
@@ -122,10 +305,10 @@ body {
 
 /* footer */
 .site-footer {
-  margin: 60px 0 40px;
+  margin: 48px 0 28px;
   text-align: center;
-  font-size: 14px;
-  color: #666;
+  font-size: 13px;
+  color: var(--lor-muted);
 }
 
 .site-footer nav {
@@ -134,10 +317,43 @@ body {
 
 .site-footer a {
   margin: 0 8px;
-  color: #000;
+  color: var(--lor-black);
   text-decoration: none;
+  font-weight: 500;
 }
 
 .site-footer a:hover {
-  color: #666666;
+  color: var(--lor-gold-dark);
+}
+
+/* small utilities */
+.card {
+  background: var(--lor-card);
+  border: 1px solid var(--lor-border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.muted {
+  color: var(--lor-muted);
+}
+
+.brand-badge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  color: var(--lor-black);
+  background: transparent;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* Utilities for a subtle page hero feel */
+.hero {
+  background: linear-gradient(
+    180deg,
+    rgba(191, 160, 106, 0.06),
+    transparent 40%
+  );
+  border-radius: 10px;
+  padding: 18px;
 }
