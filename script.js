@@ -8,10 +8,13 @@ const chatWindow = document.getElementById("chatWindow");
   Set WORKER_URL to the public worker URL (example below). */
 const WORKER_URL = "https://broad-frog-68ee.lthomas15.workers.dev/"; // set to your deployed worker URL
 
-// Chat history kept in-memory for the session. We keep a system message once.
-const messages = [
-  { role: "system", content: "You are a helpful product advisor for L'Oréal." },
-];
+// session and conversation history
+const BASE_SYSTEM = "You are a helpful product advisor for L'Oréal.";
+const MAX_HISTORY = 10; // keep last N user/assistant turns (not counting system)
+let session = { userName: null };
+
+// Chat history kept in-memory for the session. Keep the system message at index 0.
+let messages = [{ role: "system", content: BASE_SYSTEM }];
 
 // Elements
 const latestQuestionEl = document.getElementById("latestQuestion");
@@ -20,17 +23,39 @@ const latestQuestionEl = document.getElementById("latestQuestion");
 appendMessage("👋 Hello! How can I help you today?", "ai");
 
 /* Helpers */
-function appendMessage(text, who = "ai") {
+function appendMessage(text, who = "ai", opts = {}) {
   const wrapper = document.createElement("div");
   wrapper.className = `msg ${who === "user" ? "user" : "ai"}`;
-
   const bubble = document.createElement("div");
   bubble.className = "bubble";
-  bubble.textContent = text;
 
+  // if the message is from the user and we know the name, show it small above the bubble
+  if (who === "user" && opts.name) {
+    const nameLabel = document.createElement("div");
+    nameLabel.className = "msg-label";
+    nameLabel.style.fontSize = "12px";
+    nameLabel.style.marginBottom = "6px";
+    nameLabel.style.opacity = "0.85";
+    nameLabel.textContent = opts.name;
+    wrapper.appendChild(nameLabel);
+  }
+
+  bubble.textContent = text;
   wrapper.appendChild(bubble);
   chatWindow.appendChild(wrapper);
   chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+/* Add a message to the in-memory history and trim if necessary */
+function addMessageToHistory(role, content) {
+  messages.push({ role, content });
+  // maintain system message as first element, trim the rest to MAX_HISTORY
+  const system = messages[0];
+  const rest = messages.slice(1);
+  while (rest.length > MAX_HISTORY) {
+    rest.shift();
+  }
+  messages = [system, ...rest];
 }
 
 function setLoading(isLoading) {
@@ -53,9 +78,15 @@ async function sendToAPI(messagesPayload) {
     );
   }
 
+  // helpful debug log so we can verify the client is calling the worker
+  console.debug("Sending messages to worker:", WORKER_URL, messagesPayload);
+
   const res = await fetch(WORKER_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    // Include a small client-side marker header for worker-side logging/inspection
+    // (worker can ignore if not needed)
+    // Note: don't put secrets in the client.
     body: JSON.stringify({ messages: messagesPayload }),
   });
 
@@ -78,8 +109,8 @@ chatForm.addEventListener("submit", async (e) => {
   latestQuestionEl.textContent = text;
 
   // append user message locally and add to messages payload (for history)
-  appendMessage(text, "user");
-  messages.push({ role: "user", content: text });
+  appendMessage(text, "user", { name: session.userName || "" });
+  addMessageToHistory("user", text);
 
   // clear input and show loading state
   userInput.value = "";
@@ -105,7 +136,7 @@ chatForm.addEventListener("submit", async (e) => {
 
     // append assistant message and add to history
     appendMessage(assistantText, "ai");
-    messages.push({ role: "assistant", content: assistantText });
+    addMessageToHistory("assistant", assistantText);
   } catch (err) {
     console.error(err);
     typingEl.remove();
@@ -117,3 +148,27 @@ chatForm.addEventListener("submit", async (e) => {
     setLoading(false);
   }
 });
+
+/* Name form handling: allow user to optionally set a name for the session. */
+const nameForm = document.getElementById("nameForm");
+const userNameInput = document.getElementById("userNameInput");
+if (nameForm) {
+  nameForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const val = userNameInput.value.trim();
+    session.userName = val || null;
+
+    // update the system message so the assistant is aware of the user's name
+    messages[0].content =
+      BASE_SYSTEM +
+      (session.userName ? ` The user's name is ${session.userName}.` : "");
+
+    // give feedback in the chat window
+    appendMessage(
+      session.userName
+        ? `Nice to meet you, ${session.userName}! I'll remember your name for this session.`
+        : `Okay — I'll not use a name for this session.`,
+      "ai"
+    );
+  });
+}

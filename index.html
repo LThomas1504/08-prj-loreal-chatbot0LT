@@ -26,6 +26,18 @@
       <!------- Chat Area ------->
       <main>
         <section class="chatbox">
+          <!-- optional: set your name for a personalized chat (stored in-session) -->
+          <form id="nameForm" class="chat-form" style="margin-bottom: 12px">
+            <label for="userNameInput" class="visually-hidden">Your name</label>
+            <input
+              id="userNameInput"
+              name="userNameInput"
+              type="text"
+              placeholder="Your name (optional)"
+              autocomplete="name"
+            />
+            <button type="submit" id="setNameBtn">Set</button>
+          </form>
           <!-- latest user question (resets each submit) -->
           <div
             id="latestQuestion"
@@ -66,8 +78,6 @@
         </nav>
       </footer>
     </div>
-
-    <!-- secrets.js can be removed when using Cloudflare Workers for API requests -->
     <script src="secrets.js"></script>
     <script src="script.js"></script>
   </body>
