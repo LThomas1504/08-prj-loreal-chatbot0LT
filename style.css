@@ -35,17 +35,20 @@
     - The `local()` source helps use a font already installed on your machine (helpful for staging).
   */
 :root {
-  /* Primary brand colors (L'Oréal-inspired) */
-  --lor-black: #0b0b0b; /* logo/primary text */
-  --lor-charcoal: #2b2b2b; /* body text */
-  --lor-gold: #bfa06a; /* accent / luxury gold */
-  --lor-gold-dark: #9c7b3f; /* accent darker */
-  --lor-muted: #8a8a8a; /* subdued text */
-  --lor-bg: #f5f1ec; /* warm neutral background */
-  --lor-card: #ffffff; /* card / panel background */
-  --lor-border: #e6e0d9; /* subtle borders */
-  --lor-red: #ff0038; /* passionate red (accent) */
-  --lor-white: #ffffff;
+  /* Only the four approved brand colors may be used in this stylesheet */
+  --lor-black: #000000; /* black */
+  --lor-white: #FFFFFF; /* white */
+  --lor-red: #FF003B; /* passionate red */
+  --lor-gold: #E3A635; /* Enternal gold */
+
+  /* map legacy tokens to allowed colors (use rgba(...) where a softer value is needed)
+     Note: rgba with these RGB values is still using one of the four allowed colors */
+  --lor-charcoal: var(--lor-black); /* body text -> black */
+  --lor-muted: var(--lor-black); /* muted text -> black (use opacity where needed) */
+  --lor-bg: var(--lor-white); /* page background -> white */
+  --lor-card: var(--lor-white); /* card background -> white */
+  --lor-border: rgba(0,0,0,0.06); /* subtle border using black at low opacity */
+  --lor-gold-dark: rgba(227,166,53,0.85); /* darker gold variant (still gold) */
 
   /* Typography stacks */
   --font-heading: "Didot", "Bodoni MT", "Playfair Display", Georgia, serif;
@@ -250,7 +253,8 @@ a:hover {
 }
 
 .chat-form input::placeholder {
-  color: #b9b0a5;
+  /* use a soft gold tint for placeholders (allowed color) */
+  color: rgba(255, 0, 59, 1);
 }
 
 .chat-form input:focus {
